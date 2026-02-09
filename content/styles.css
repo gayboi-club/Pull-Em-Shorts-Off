@@ -1,0 +1,21 @@
+/* Shorts sidebar/navigation hiding */
+ytd-guide-entry-renderer[title*="Shorts"],
+ytd-mini-guide-entry-renderer a[href="/shorts"],
+a[title="Shorts"] {
+  display: none !important;
+}
+
+/* Hide navigation arrows on Shorts pages */
+ytd-shorts #navigation-button-down,
+ytd-shorts #navigation-button-up,
+ytd-shorts .navigation-button {
+  display: none !important;
+}
+
+/* Prevent scroll on shorts container */
+ytd-shorts #shorts-container,
+ytd-shorts ytd-reel-video-renderer {
+  overflow: hidden !important;
+  touch-action: none !important;
+  scroll-snap-type: none !important;
+}

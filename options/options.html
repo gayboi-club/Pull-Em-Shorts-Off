@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings - Pull Em Shorts Off</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <img src="../pullinemshortsoff.png" alt="Logo" class="logo">
+      <h1>Pull Em Shorts Off</h1>
+      <p class="subtitle">Block the scroll, keep the focus.</p>
+    </header>
+
+    <main>
+      <section class="section">
+        <h2 class="section-title">Homepage Settings</h2>
+
+        <div class="toggle-group">
+          <label class="toggle">
+            <input type="checkbox" id="hideShortsOnHomepage">
+            <span class="toggle-label">Hide Shorts on homepage</span>
+          </label>
+          <span class="hint">Remove Shorts shelf from your YouTube feed</span>
+        </div>
+
+        <div class="toggle-group" id="gifToggleGroup">
+          <label class="toggle">
+            <input type="checkbox" id="showReplacementGif" checked>
+            <span class="toggle-label">Show motivational GIF</span>
+          </label>
+          <span class="hint">Replace hidden Shorts with a reminder to stay focused</span>
+        </div>
+
+        <div class="form-group" id="gifUrlGroup">
+          <label for="customGifUrl">Custom GIF/Video URL</label>
+          <input type="url" id="customGifUrl" placeholder="https://media.tenor.com/..." />
+          <span class="hint">Direct link to GIF or MP4. Leave empty for default.</span>
+        </div>
+      </section>
+
+      <div class="divider"></div>
+
+      <section class="section">
+        <h2 class="section-title">Discord Notifications</h2>
+
+        <div class="form-group">
+          <label for="username">Display Name</label>
+          <input type="text" id="username" placeholder="Your name" />
+          <span class="hint">Shown in daily messages</span>
+        </div>
+
+        <div class="form-group">
+          <label for="webhookUrl">Webhook URL</label>
+          <input type="url" id="webhookUrl" placeholder="https://discord.com/api/webhooks/..." />
+          <span class="hint"><a href="https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks"
+              target="_blank">How to create a webhook</a></span>
+        </div>
+
+        <div class="form-group">
+          <label for="notificationHour">Notification Time</label>
+          <select id="notificationHour">
+            <option value="6">6:00 AM</option>
+            <option value="7">7:00 AM</option>
+            <option value="8">8:00 AM</option>
+            <option value="9">9:00 AM</option>
+            <option value="10">10:00 AM</option>
+            <option value="12">12:00 PM</option>
+            <option value="14">2:00 PM</option>
+            <option value="16">4:00 PM</option>
+            <option value="18">6:00 PM</option>
+            <option value="20" selected>8:00 PM</option>
+            <option value="21">9:00 PM</option>
+            <option value="22">10:00 PM</option>
+          </select>
+        </div>
+
+        <div class="button-group">
+          <button id="saveBtn" class="btn primary">Save</button>
+          <button id="testBtn" class="btn secondary">Test</button>
+        </div>
+
+        <div id="status" class="status" style="display: none;"></div>
+      </section>
+
+      <div class="divider"></div>
+
+      <section class="section">
+        <h2 class="section-title">How it works</h2>
+        <ul class="info-list">
+          <li><strong>Scroll blocked</strong> — Watch a Short, but can't scroll to the next one.</li>
+          <li><strong>Sidebar hidden</strong> — Shorts icon removed from navigation.</li>
+          <li><strong>Feed control</strong> — Choose to see or hide Shorts on homepage.</li>
+          <li><strong>Daily ping</strong> — Message sent to Discord each day.</li>
+        </ul>
+      </section>
+    </main>
+
+    <footer>
+      <p>Made by Energyboy :3</p>
+    </footer>
+  </div>
+
+  <script src="options.js"></script>
+</body>
+
+</html>
