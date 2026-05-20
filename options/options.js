@@ -1,86 +1,118 @@
-document.addEventListener('DOMContentLoaded', async () => {
-    const settings = await browser.storage.local.get([
-        'username', 'webhookUrl', 'notificationHour',
-        'hideShortsOnHomepage', 'showReplacementGif', 'customGifUrl'
+'use strict';
+
+const TOGGLE_MAP = {
+  blockScroll: { default: true },
+  hideSidebar: { default: true },
+  redirectShorts: { default: false },
+  hideShortsOnHomepage: { default: false },
+  showReplacementGif: { default: true }
+};
+
+/**
+ * Show a floating toast notification.
+ */
+function showToast(message, type = 'success') {
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.className = `toast ${type} show`;
+  clearTimeout(toast._timeout);
+  toast._timeout = setTimeout(() => {
+    toast.classList.remove('show');
+  }, 2500);
+}
+
+/**
+ * Update visibility of GIF-related controls based on homepage toggle state.
+ */
+function updateGifVisibility() {
+  const homepageHidden = document.getElementById('hideShortsOnHomepage').checked;
+  const gifEnabled = document.getElementById('showReplacementGif').checked;
+  const gifToggleGroup = document.getElementById('gifToggleGroup');
+  const gifUrlGroup = document.getElementById('gifUrlGroup');
+
+  gifToggleGroup.style.display = homepageHidden ? '' : 'none';
+  gifUrlGroup.style.display = (homepageHidden && gifEnabled) ? '' : 'none';
+}
+
+/**
+ * Load and display stats (blocked today + streak).
+ */
+async function loadStats() {
+  try {
+    const data = await browser.storage.local.get([
+      'blockedToday', 'lastResetDate', 'streakCount', 'lastActiveDate'
     ]);
 
-    if (settings.username) document.getElementById('username').value = settings.username;
-    if (settings.webhookUrl) document.getElementById('webhookUrl').value = settings.webhookUrl;
-    if (settings.notificationHour !== undefined) {
-        document.getElementById('notificationHour').value = settings.notificationHour;
+    const today = new Date().toDateString();
+
+    // Blocked today
+    let blocked = data.blockedToday || 0;
+    if (data.lastResetDate !== today) {
+      blocked = 0;
+    }
+    document.getElementById('blockedToday').textContent = blocked;
+
+    // Streak calculation
+    let streak = data.streakCount || 0;
+    const lastActive = data.lastActiveDate;
+
+    if (lastActive) {
+      const lastDate = new Date(lastActive);
+      const now = new Date();
+      const diffDays = Math.floor((now - lastDate) / (1000 * 60 * 60 * 24));
+
+      if (diffDays > 1) {
+        streak = 1; // streak broken
+        await browser.storage.local.set({ streakCount: 1, lastActiveDate: today });
+      } else if (diffDays === 1 || lastActive !== today) {
+        streak = (data.streakCount || 0) + (lastActive !== today ? 1 : 0);
+        if (lastActive !== today) {
+          await browser.storage.local.set({ streakCount: streak, lastActiveDate: today });
+        }
+      }
+    } else {
+      streak = 1;
+      await browser.storage.local.set({ streakCount: 1, lastActiveDate: today });
     }
 
-    const hideShortsCheckbox = document.getElementById('hideShortsOnHomepage');
-    const showGifCheckbox = document.getElementById('showReplacementGif');
-    const gifToggleGroup = document.getElementById('gifToggleGroup');
-    const gifUrlGroup = document.getElementById('gifUrlGroup');
-    const customGifInput = document.getElementById('customGifUrl');
-
-    hideShortsCheckbox.checked = settings.hideShortsOnHomepage ?? false;
-    showGifCheckbox.checked = settings.showReplacementGif ?? true;
-    customGifInput.value = settings.customGifUrl || '';
-
-    function updateGifVisibility() {
-        const shortsHidden = hideShortsCheckbox.checked;
-        const gifEnabled = showGifCheckbox.checked;
-        gifToggleGroup.style.display = shortsHidden ? '' : 'none';
-        gifUrlGroup.style.display = (shortsHidden && gifEnabled) ? '' : 'none';
-    }
-    updateGifVisibility();
-
-    hideShortsCheckbox.addEventListener('change', async () => {
-        await browser.storage.local.set({ hideShortsOnHomepage: hideShortsCheckbox.checked });
-        updateGifVisibility();
-    });
-
-    showGifCheckbox.addEventListener('change', async () => {
-        await browser.storage.local.set({ showReplacementGif: showGifCheckbox.checked });
-        updateGifVisibility();
-    });
-
-    customGifInput.addEventListener('blur', async () => {
-        await browser.storage.local.set({ customGifUrl: customGifInput.value.trim() });
-    });
-
-    document.getElementById('saveBtn').addEventListener('click', async () => {
-        const username = document.getElementById('username').value.trim();
-        const webhookUrl = document.getElementById('webhookUrl').value.trim();
-        const notificationHour = parseInt(document.getElementById('notificationHour').value);
-        const customGifUrl = customGifInput.value.trim();
-
-        if (!username) { showStatus('Please enter your display name', 'error'); return; }
-        if (!webhookUrl) { showStatus('Please enter a Discord webhook URL', 'error'); return; }
-        if (!webhookUrl.startsWith('https://discord.com/api/webhooks/')) {
-            showStatus('Invalid webhook URL', 'error');
-            return;
-        }
-
-        await browser.storage.local.set({ username, webhookUrl, notificationHour, customGifUrl });
-        await browser.runtime.sendMessage({ action: 'updateAlarm' });
-        showStatus('Settings saved', 'success');
-    });
-
-    document.getElementById('testBtn').addEventListener('click', async () => {
-        const webhookUrl = document.getElementById('webhookUrl').value.trim();
-        if (!webhookUrl) { showStatus('Please enter a webhook URL first', 'error'); return; }
-
-        const username = document.getElementById('username').value.trim() || 'Test User';
-        await browser.storage.local.set({ username, webhookUrl });
-
-        showStatus('Sending...', 'info');
-        try {
-            await browser.runtime.sendMessage({ action: 'testNotification' });
-            showStatus('Sent. Check Discord.', 'success');
-        } catch (error) {
-            showStatus('Failed: ' + error.message, 'error');
-        }
-    });
-});
-
-function showStatus(message, type) {
-    const statusEl = document.getElementById('status');
-    statusEl.textContent = message;
-    statusEl.className = `status ${type}`;
-    statusEl.style.display = 'block';
-    setTimeout(() => { statusEl.style.display = 'none'; }, 4000);
+    document.getElementById('streakCount').textContent = streak;
+  } catch (e) {
+    // Storage not available
+  }
 }
+
+document.addEventListener('DOMContentLoaded', async () => {
+  // Load all toggle settings
+  const keys = Object.keys(TOGGLE_MAP);
+  const settings = await browser.storage.local.get([...keys, 'customGifUrl']);
+
+  // Set up toggles with auto-save
+  for (const [key, config] of Object.entries(TOGGLE_MAP)) {
+    const checkbox = document.getElementById(key);
+    if (!checkbox) continue;
+
+    checkbox.checked = settings[key] ?? config.default;
+
+    checkbox.addEventListener('change', async () => {
+      await browser.storage.local.set({ [key]: checkbox.checked });
+      updateGifVisibility();
+      showToast('Saved');
+    });
+  }
+
+  // Custom GIF URL
+  const customGifInput = document.getElementById('customGifUrl');
+  customGifInput.value = settings.customGifUrl || '';
+
+  let saveTimeout;
+  customGifInput.addEventListener('input', () => {
+    clearTimeout(saveTimeout);
+    saveTimeout = setTimeout(async () => {
+      await browser.storage.local.set({ customGifUrl: customGifInput.value.trim() });
+      showToast('Saved');
+    }, 600);
+  });
+
+  updateGifVisibility();
+  loadStats();
+});

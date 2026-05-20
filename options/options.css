@@ -1,9 +1,9 @@
 :root {
-    --bg: #ffffff;
-    --bg-secondary: #f7f6f3;
-    --text: #37352f;
-    --text-secondary: #6b6b6b;
-    --border: #e0e0e0;
+    --bg: #1e1e1e;
+    --bg-secondary: #252526;
+    --text: #cccccc;
+    --text-secondary: #999999;
+    --border: #333333;
     --accent: #2eaadc;
     --success: #0f7b0f;
     --error: #eb5757;
@@ -46,6 +46,7 @@ header h1 {
     font-weight: 700;
     letter-spacing: -0.5px;
     margin-bottom: 4px;
+    color: #ffffff;
 }
 
 .subtitle {
@@ -64,6 +65,44 @@ header h1 {
     letter-spacing: 0.5px;
     color: var(--text-secondary);
     margin-bottom: 16px;
+}
+
+/* Stats */
+.stats-section {
+    display: flex;
+    align-items: center;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+}
+
+.stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+}
+
+.stat-value {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1.1;
+}
+
+.stat-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 4px;
+    text-transform: uppercase;
+}
+
+.stat-divider {
+    width: 1px;
+    height: 40px;
+    background: var(--border);
+    margin: 0 24px;
 }
 
 .form-group {
@@ -97,7 +136,7 @@ header h1 {
 }
 
 .form-group input::placeholder {
-    color: #b0b0b0;
+    color: #666666;
 }
 
 .toggle-group {
@@ -128,11 +167,10 @@ header h1 {
     width: 16px;
     height: 16px;
     border-radius: 50%;
-    background: white;
+    background: var(--text);
     top: 2px;
     left: 2px;
     transition: transform 0.2s;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .toggle input[type="checkbox"]:checked {
@@ -141,6 +179,7 @@ header h1 {
 
 .toggle input[type="checkbox"]:checked::before {
     transform: translateX(16px);
+    background: #ffffff;
 }
 
 .toggle-label {
@@ -157,68 +196,6 @@ header h1 {
     margin-top: 4px;
     font-size: 12px;
     color: var(--text-secondary);
-}
-
-.hint a {
-    color: var(--text-secondary);
-    text-decoration: underline;
-}
-
-.button-group {
-    display: flex;
-    gap: 8px;
-    margin-top: 24px;
-}
-
-.btn {
-    padding: 8px 16px;
-    border: none;
-    border-radius: 4px;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.15s;
-}
-
-.btn.primary {
-    background: var(--accent);
-    color: white;
-}
-
-.btn.primary:hover {
-    background: #2590b8;
-}
-
-.btn.secondary {
-    background: var(--bg-secondary);
-    color: var(--text);
-    border: 1px solid var(--border);
-}
-
-.btn.secondary:hover {
-    background: #eeeeee;
-}
-
-.status {
-    margin-top: 16px;
-    padding: 10px 12px;
-    border-radius: 4px;
-    font-size: 14px;
-}
-
-.status.success {
-    background: #e6f4ea;
-    color: var(--success);
-}
-
-.status.error {
-    background: #fce8e8;
-    color: var(--error);
-}
-
-.status.info {
-    background: #e8f4fc;
-    color: var(--accent);
 }
 
 .info-list {
@@ -239,6 +216,7 @@ header h1 {
 
 .info-list strong {
     font-weight: 600;
+    color: #ffffff;
 }
 
 .divider {
@@ -253,6 +231,26 @@ footer {
     border-top: 1px solid var(--border);
     font-size: 12px;
     color: var(--text-secondary);
+    display: flex;
+    justify-content: space-between;
+}
+
+.status {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    padding: 10px 16px;
+    border-radius: 4px;
+    font-size: 14px;
+    color: var(--text);
+    z-index: 100;
+}
+
+.status.success {
+    border-left: 3px solid var(--success);
 }
 
 @media (max-width: 480px) {
@@ -262,9 +260,5 @@ footer {
 
     header h1 {
         font-size: 24px;
-    }
-
-    .button-group {
-        flex-direction: column;
     }
 }

@@ -1,79 +1,63 @@
-const ALARM_NAME = 'dailyNotification';
-const DEFAULT_NOTIFICATION_HOUR = 20;
+'use strict';
 
-browser.runtime.onInstalled.addListener(async (details) => {
-    if (details.reason === 'install') browser.runtime.openOptionsPage();
-    await setupDailyAlarm();
+/**
+ * Opens the options page when the extension icon is clicked.
+ * Only fires when no default_popup is set, otherwise the popup handles it.
+ */
+browser.action.onClicked.addListener(() => browser.runtime.openOptionsPage());
+
+/**
+ * On first install, open the options page so the user can configure settings.
+ */
+browser.runtime.onInstalled.addListener((details) => {
+    if (details.reason === 'install') {
+        browser.runtime.openOptionsPage();
+    }
 });
 
-async function setupDailyAlarm() {
-    await browser.alarms.clear(ALARM_NAME);
-    const settings = await browser.storage.local.get(['notificationHour']);
-    const hour = settings.notificationHour ?? DEFAULT_NOTIFICATION_HOUR;
+/**
+ * Handle messages from content scripts and popup.
+ */
+browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.action === 'openOptions') {
+        browser.runtime.openOptionsPage();
+    }
 
-    const now = new Date();
-    const nextNotification = new Date();
-    nextNotification.setHours(hour, 0, 0, 0);
-
-    if (now >= nextNotification) nextNotification.setDate(nextNotification.getDate() + 1);
-    const delayInMinutes = (nextNotification.getTime() - now.getTime()) / (1000 * 60);
-
-    browser.alarms.create(ALARM_NAME, {
-        delayInMinutes: delayInMinutes,
-        periodInMinutes: 24 * 60
-    });
-}
-
-browser.alarms.onAlarm.addListener(async (alarm) => {
-    if (alarm.name === ALARM_NAME) await sendDailyNotification();
-});
-
-async function sendDailyNotification() {
-    const settings = await browser.storage.local.get(['webhookUrl', 'username']);
-    if (!settings.webhookUrl) return;
-
-    const username = settings.username || 'User';
-    const messages = [
-        `**${username}** made it through another day without falling down the Shorts rabbit hole.`,
-        `Another day, another win for **${username}**. No Shorts scrolling.`,
-        `**${username}** didn't scroll Shorts today. That's a wrap.`,
-        `Daily check-in: **${username}** kept it together. Zero Shorts consumed via scroll.`,
-        `**${username}** resisted the endless scroll. Day complete.`,
-        `No Shorts doom-scrolling for **${username}** today.`,
-        `**${username}** closed the loop without losing hours to Shorts. Nice.`,
-        `Scroll count for **${username}**: zero. Another solid day.`,
-    ];
-
-    const randomMessage = messages[Math.floor(Math.random() * messages.length)];
-
-    const payload = {
-        content: randomMessage,
-        embeds: [{
-            title: 'Pull Em Shorts Off - Daily Report',
-            description: 'No infinite scrolling today.',
-            color: 0x2d2d2d,
-            footer: { text: 'Keep it up.' },
-            timestamp: new Date().toISOString()
-        }]
-    };
-
-    try {
-        await fetch(settings.webhookUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
+    if (message.action === 'getBlockedCount') {
+        browser.storage.local.get(['blockedToday', 'lastResetDate']).then((data) => {
+            const today = new Date().toDateString();
+            if (data.lastResetDate !== today) {
+                browser.storage.local.set({ blockedToday: 0, lastResetDate: today });
+                sendResponse({ count: 0 });
+            } else {
+                sendResponse({ count: data.blockedToday || 0 });
+            }
         });
-    } catch (e) { }
-}
+        return true;
+    }
 
-browser.browserAction.onClicked.addListener(() => browser.runtime.openOptionsPage());
+    if (message.action === 'incrementBlocked') {
+        browser.storage.local.get(['blockedToday', 'lastResetDate']).then((data) => {
+            const today = new Date().toDateString();
+            let count = data.blockedToday || 0;
+            if (data.lastResetDate !== today) {
+                count = 0;
+            }
+            count++;
+            browser.storage.local.set({ blockedToday: count, lastResetDate: today });
+            browser.action.setBadgeText({ text: String(count) });
+            browser.action.setBadgeBackgroundColor({ color: '#6c5ce7' });
+        });
+    }
+});
 
-browser.runtime.onMessage.addListener(async (message) => {
-    if (message.action === 'testNotification') {
-        await sendDailyNotification();
-        return { success: true };
-    } else if (message.action === 'updateAlarm') {
-        await setupDailyAlarm();
-        return { success: true };
+/**
+ * Restore badge on startup.
+ */
+browser.storage.local.get(['blockedToday', 'lastResetDate']).then((data) => {
+    const today = new Date().toDateString();
+    if (data.lastResetDate === today && data.blockedToday > 0) {
+        browser.action.setBadgeText({ text: String(data.blockedToday) });
+        browser.action.setBadgeBackgroundColor({ color: '#6c5ce7' });
     }
 });

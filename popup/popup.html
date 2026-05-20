@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pull Em Shorts Off</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+
+<body>
+  <div class="popup-container">
+    <header class="popup-header">
+      <img src="../icons/icon-48.png" alt="Logo" class="popup-logo">
+      <div class="popup-title-group">
+        <h1 class="popup-title">Pull Em Shorts Off</h1>
+        <span class="popup-badge" id="blockedCount" title="Scrolls blocked today">0</span>
+      </div>
+    </header>
+
+    <div class="toggle-list">
+      <label class="toggle-row">
+        <span class="toggle-text">Block scroll</span>
+        <div class="toggle">
+          <input type="checkbox" id="toggleBlockScroll" checked>
+        </div>
+      </label>
+
+      <label class="toggle-row">
+        <span class="toggle-text">Hide sidebar</span>
+        <div class="toggle">
+          <input type="checkbox" id="toggleHideSidebar" checked>
+        </div>
+      </label>
+
+      <label class="toggle-row">
+        <span class="toggle-text">Hide on homepage</span>
+        <div class="toggle">
+          <input type="checkbox" id="toggleHideHomepage">
+        </div>
+      </label>
+
+      <label class="toggle-row">
+        <span class="toggle-text">Redirect to player</span>
+        <div class="toggle">
+          <input type="checkbox" id="toggleRedirect">
+        </div>
+      </label>
+    </div>
+
+    <div class="popup-footer">
+      <button class="settings-link" id="openSettings">
+        All settings
+      </button>
+      <span class="version">v1.1.0</span>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+
+</html>

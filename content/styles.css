@@ -19,3 +19,8 @@ ytd-shorts ytd-reel-video-renderer {
   touch-action: none !important;
   scroll-snap-type: none !important;
 }
+
+/* Dark mode aware replacement container */
+html[dark] .peso-replacement {
+  background: #1a1a1a !important;
+}

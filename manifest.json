@@ -1,13 +1,14 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "Pull Em Shorts Off",
-  "version": "1.0.2",
-  "description": "Block YouTube Shorts infinite scrolling. Watch individual Shorts but prevent doom-scrolling. Optional Discord daily notifications.",
+  "version": "1.1.0",
+  "description": "Block YouTube Shorts infinite scrolling. Watch individual Shorts but prevent doom-scrolling.",
   "author": "Energyboy :3",
   "homepage_url": "https://github.com/TimurHromek/Pull-Em-Shorts-Off",
   "permissions": [
-    "storage",
-    "alarms",
+    "storage"
+  ],
+  "host_permissions": [
     "*://*.youtube.com/*"
   ],
   "icons": {
@@ -17,8 +18,7 @@
   "background": {
     "scripts": [
       "background/background.js"
-    ],
-    "persistent": false
+    ]
   },
   "content_scripts": [
     {
@@ -35,21 +35,22 @@
       "run_at": "document_start"
     }
   ],
-  "options_ui": {
-    "page": "options/options.html",
-    "open_in_tab": true
-  },
-  "browser_action": {
+  "action": {
     "default_icon": {
       "48": "icons/icon-48.png",
       "96": "icons/icon-96.png"
     },
-    "default_title": "Pull Em Shorts Off - Settings"
+    "default_title": "Pull Em Shorts Off",
+    "default_popup": "popup/popup.html"
+  },
+  "options_ui": {
+    "page": "options/options.html",
+    "open_in_tab": true
   },
   "browser_specific_settings": {
     "gecko": {
       "id": "pullemshortsoff@hromek.timur.gmail.com",
-      "strict_min_version": "142.0",
+      "strict_min_version": "109.0",
       "data_collection_permissions": {
         "required": [
           "none"
