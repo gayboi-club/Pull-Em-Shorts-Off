@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Pull Em Shorts Off",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Block YouTube Shorts infinite scrolling. Watch individual Shorts but prevent doom-scrolling.",
   "author": "Energyboy :3",
   "homepage_url": "https://github.com/TimurHromek/Pull-Em-Shorts-Off",
@@ -9,7 +9,8 @@
     "storage"
   ],
   "host_permissions": [
-    "*://*.youtube.com/*"
+    "*://*.youtube.com/*",
+    "*://*.instagram.com/*"
   ],
   "icons": {
     "48": "icons/icon-48.png",
@@ -33,6 +34,15 @@
         "content/styles.css"
       ],
       "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "*://*.instagram.com/*"
+      ],
+      "js": [
+        "content/insta-blocker.js"
+      ],
+      "run_at": "document_start"
     }
   ],
   "action": {
@@ -50,7 +60,7 @@
   "browser_specific_settings": {
     "gecko": {
       "id": "pullemshortsoff@hromek.timur.gmail.com",
-      "strict_min_version": "109.0",
+      "strict_min_version": "142.0",
       "data_collection_permissions": {
         "required": [
           "none"

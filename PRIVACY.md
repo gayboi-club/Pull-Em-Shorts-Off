@@ -30,6 +30,7 @@ All data is stored locally using the browser's built-in storage API (`browser.st
 ## Third-Party Services
 
 - **YouTube**: The extension runs on YouTube pages to block Shorts scrolling
+- **Instagram**: The extension runs on Instagram pages to block access or hide Reels
 - **Tenor**: Default GIF is loaded from Tenor (you can change or disable this)
 
 ## Your Rights

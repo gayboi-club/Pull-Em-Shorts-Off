@@ -84,7 +84,7 @@ async function loadStats() {
 document.addEventListener('DOMContentLoaded', async () => {
   // Load all toggle settings
   const keys = Object.keys(TOGGLE_MAP);
-  const settings = await browser.storage.local.get([...keys, 'customGifUrl']);
+  const settings = await browser.storage.local.get([...keys, 'customGifUrl', 'instaMode']);
 
   // Set up toggles with auto-save
   for (const [key, config] of Object.entries(TOGGLE_MAP)) {
@@ -112,6 +112,19 @@ document.addEventListener('DOMContentLoaded', async () => {
       showToast('Saved');
     }, 600);
   });
+
+  // Insta Mode
+  const instaModeRadios = document.querySelectorAll('input[name="instaMode"]');
+  const savedInstaMode = settings.instaMode || 'block_reels';
+  for (const radio of instaModeRadios) {
+    if (radio.value === savedInstaMode) radio.checked = true;
+    radio.addEventListener('change', async () => {
+      if (radio.checked) {
+        await browser.storage.local.set({ instaMode: radio.value });
+        showToast('Saved');
+      }
+    });
+  }
 
   updateGifVisibility();
   loadStats();

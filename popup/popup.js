@@ -16,7 +16,7 @@ const DEFAULTS = {
 
 document.addEventListener('DOMContentLoaded', async () => {
   const keys = Object.values(TOGGLE_MAP);
-  const settings = await browser.storage.local.get(keys);
+  const settings = await browser.storage.local.get([...keys, 'instaMode']);
 
   for (const [elementId, storageKey] of Object.entries(TOGGLE_MAP)) {
     const checkbox = document.getElementById(elementId);
@@ -26,6 +26,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     checkbox.addEventListener('change', async () => {
       await browser.storage.local.set({ [storageKey]: checkbox.checked });
+    });
+  }
+
+  // Load Instagram mode
+  const instaModeSelect = document.getElementById('instaModeSelect');
+  if (instaModeSelect) {
+    instaModeSelect.value = settings.instaMode || 'block_reels';
+    instaModeSelect.addEventListener('change', async () => {
+      await browser.storage.local.set({ instaMode: instaModeSelect.value });
     });
   }
 

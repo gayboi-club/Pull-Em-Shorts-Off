@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.1] - 2026-05-20
+
+### Added
+- **Instagram Support**: Added the ability to either block Instagram entirely or block only Instagram Reels. This enforces that you can never have normal access to Reels. You can configure this setting in the options or popup menu.
+
 ## [1.1.0] - 2026-05-20
 
 ### Added

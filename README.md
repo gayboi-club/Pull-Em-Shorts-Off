@@ -8,6 +8,7 @@ A minimalist Firefox extension that blocks YouTube Shorts infinite scrolling whi
 - **Sidebar Hidden** — Shorts icon removed from navigation
 - **Homepage Control** — Choose to hide Shorts from your feed
 - **Regular Player Redirect** — Automatically redirect Shorts to the regular YouTube player
+- **Instagram Blocking** — Block Instagram entirely, or block only Instagram Reels.
 - **Custom Replacement** — Replace hidden Shorts with your own GIF/video
 - **Daily Streak Tracker** — Keep track of your progress and blocked scrolls
 
